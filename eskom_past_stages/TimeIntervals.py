@@ -22,6 +22,9 @@ class TimeIntervals:
             self.stages = stages
             self.num_slots = len(start)
             self.zero = datetime.strptime('00:00', '%H:%M')# time interval equivalent to 0
+            self.max = datetime.strptime('23:59', '%H:%M')# time interval equivalent to 0
+            if self.end[self.num_slots-1] == self.zero:
+                self.end[self.num_slots-1] = self.max
             
         else:
             raise ValueError('Time interval creations list dims do not match')  
@@ -34,7 +37,7 @@ class TimeIntervals:
         
         is_valid = True
         
-        if self.start[0] != self.end[self.num_slots-1]:
+        if (self.start[0] != self.zero or self.end[self.num_slots-1] != self.max):
             #cyclical 
             is_valid = False
         
@@ -51,7 +54,7 @@ class TimeIntervals:
         
         day = False
         
-        if self.start[0] == self.zero:
+        if (self.start[0] == self.zero and self.end[self.num_slots-1] == self.max):
             day = True
             
         if self.isValid() and day:
@@ -86,7 +89,21 @@ class TimeIntervals:
                  False otherwise and the next interval's index.
         """
         
-        for i in range(self.num_slots-1):
+        for i in range(self.num_slots):
+            if self.start[i] <= start and self.end[i] >= end:
+                return True,i
+            
+        #if self.start[self.num_slots-1] <= start and self.max >= end:
+        #    return True,self.num_slots-1
+                       
+        return False,self.num_slots
+    
+    def inMultipleIntervals(self, start, end):
+        """
+        Returns: True if it does and the interval's index.
+                 False otherwise and the next interval's index.
+        """
+        for i in range(self.num_slots):
             if self.start[i] <= start and self.end[i] >= end:
                 return True,i
                        
@@ -97,8 +114,9 @@ class TimeIntervals:
         Insert new time interval into set of existing intervals
         """
         
-        #start = pd.to_datetime(start,format= '%H:%M') 
-        #end = pd.to_datetime(end,format= '%H:%M')
+        if end == self.zero:
+            end = self.max
+
         in_interval,i = self.isInterval(start,end)
         
         if in_interval:
@@ -138,14 +156,25 @@ class TimeIntervals:
                     self.end = self.end[:i+1] + [end,temp] + self.end[i+1:]
                     self.stages = self.stages[:i+1] + [stage] + self.stages[i:]
                     self.num_slots += 2
+
+            
+
+                
+
             
                 
         
     def __str__(self):
         
         print_string = ""
-        for i in range(self.num_slots):
+        for i in range(self.num_slots-1):
             print_string += "stage: "+str(self.stages[i])+" from "+str(self.start[i].strftime('%H:%M'))+" to "+ \
             str(self.end[i].strftime('%H:%M'))+ "\n"
         
+        print_string += "stage: "+str(self.stages[self.num_slots-1])+" from "+str(self.start[self.num_slots-1].strftime('%H:%M'))+" to "
+        if self.end[self.num_slots-1] == self.max:
+            print_string += str(self.zero.strftime('%H:%M'))+ "\n"
+        else:
+            print_string += str(self.end[self.num_slots-1].strftime('%H:%M'))+ "\n"
+
         return print_string
