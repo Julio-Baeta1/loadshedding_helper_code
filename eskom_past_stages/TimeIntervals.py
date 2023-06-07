@@ -23,11 +23,28 @@ class TimeIntervals:
             self.num_slots = len(start)
             self.zero = datetime.strptime('00:00', '%H:%M')# time interval equivalent to 0
             self.max = datetime.strptime('23:59', '%H:%M')# time interval equivalent to 0
-            if self.end[self.num_slots-1] == self.zero:
+            if self.end[self.num_slots-1] == self.zero: #Simpiler to enter 00:00 instead of 23:59 based on code that will use class
                 self.end[self.num_slots-1] = self.max
+
+            #Add case for start != zero and end != max
             
         else:
             raise ValueError('Time interval creations list dims do not match')  
+        
+    def __str__(self):
+        
+        print_string = ""
+        for i in range(self.num_slots-1):
+            print_string += "stage: "+str(self.stages[i])+" from "+str(self.start[i].strftime('%H:%M'))+" to "+ \
+            str(self.end[i].strftime('%H:%M'))+ "\n"
+        
+        print_string += "stage: "+str(self.stages[self.num_slots-1])+" from "+str(self.start[self.num_slots-1].strftime('%H:%M'))+" to "
+        if self.end[self.num_slots-1] == self.max:
+            print_string += str(self.zero.strftime('%H:%M'))+ "\n"
+        else:
+            print_string += str(self.end[self.num_slots-1].strftime('%H:%M'))+ "\n"
+
+        return print_string
 
  
     def isValid(self):
@@ -91,23 +108,38 @@ class TimeIntervals:
         
         for i in range(self.num_slots):
             if self.start[i] <= start and self.end[i] >= end:
-                return True,i
-            
-        #if self.start[self.num_slots-1] <= start and self.max >= end:
-        #    return True,self.num_slots-1
+                return True,i            
                        
         return False,self.num_slots
     
     def inMultipleIntervals(self, start, end):
         """
-        Returns: True if it does and the interval's index.
-                 False otherwise and the next interval's index.
+        Function that returns indecies of existing time intervals which the given interval spans
         """
+
+        multi_int = [-1,-1]
         for i in range(self.num_slots):
-            if self.start[i] <= start and self.end[i] >= end:
-                return True,i
+            if self.start[i] > start and multi_int[0] == -1:
+                multi_int[0] = i-1
+            elif self.start[i] == start:
+                multi_int[0] = i
+            if self.end[i] > end and multi_int[1] == -1:
+                multi_int[1] = i
+            elif self.end[i] == end:
+                multi_int[1] = i
+
+        """multi_int = [-1,-1]
+        for i in range(self.num_slots):
+            if self.start[i] > start and multi_int[0] == -1:
+                multi_int[0] = i-1
+            elif self.start[i] == start:
+                multi_int[0] = i
+            if self.end[i] > end and multi_int[1] == -1:
+                multi_int[1] = i-1
+            elif self.end[i] == end:
+                multi_int[1] = i"""
                        
-        return False,self.num_slots+1
+        return multi_int
     
     def fitNewInterval(self, stage, start, end):
         """
@@ -130,8 +162,7 @@ class TimeIntervals:
                 #Fully contained within one interval
             
                 if start == self.start[i]:
-                    #Aligns to start of interval, insert one new time interval
-                    
+                    #Aligns to start of interval, insert one new time interval                   
                     temp = self.end[i]
                     self.end[i] = end
                     self.start = self.start[:i+1] + [end] + self.start[i+1:]
@@ -141,7 +172,6 @@ class TimeIntervals:
                 
                 elif end == self.end[i]:
                     #Aligns to end of interval, insert one new time interval
-                    
                     self.end[i] = start
                     self.start = self.start[:i+1] + [start] + self.start[i+1:]
                     self.end = self.end[:i+1] + [end] + self.end[i+1:]
@@ -157,24 +187,49 @@ class TimeIntervals:
                     self.stages = self.stages[:i+1] + [stage] + self.stages[i:]
                     self.num_slots += 2
 
-            
+            else:
+                #New interval spans more than one interval
+                new_interval = self.inMultipleIntervals(start,end)
 
-                
+                if self.start[new_interval[0]] == start and self.end[new_interval[1]] == end:
+                    #Aligns to an interval's start and different interval's end. Only need to reduce number of intervals
+                    self.start = self.start[:new_interval[0]] + [start] + self.start[new_interval[1]+1:] 
+                    self.end = self.end[:new_interval[0]] + [end] + self.end[new_interval[1]+1:] 
+                    self.stages = self.stages[:new_interval[0]] + [stage] + self.stages[new_interval[1]+1:] 
+                    self.num_slots = len(self.start)
 
-            
-                
-        
-    def __str__(self):
-        
-        print_string = ""
-        for i in range(self.num_slots-1):
-            print_string += "stage: "+str(self.stages[i])+" from "+str(self.start[i].strftime('%H:%M'))+" to "+ \
-            str(self.end[i].strftime('%H:%M'))+ "\n"
-        
-        print_string += "stage: "+str(self.stages[self.num_slots-1])+" from "+str(self.start[self.num_slots-1].strftime('%H:%M'))+" to "
-        if self.end[self.num_slots-1] == self.max:
-            print_string += str(self.zero.strftime('%H:%M'))+ "\n"
-        else:
-            print_string += str(self.end[self.num_slots-1].strftime('%H:%M'))+ "\n"
+                elif self.start[new_interval[0]] == start:
+                    #Aligns to an interval's start
+                    self.start = self.start[:new_interval[0]] + [start,end] + self.start[new_interval[1]+1:] 
+                    self.end = self.end[:new_interval[0]] + [end] + self.end[new_interval[1]:] 
+                    self.stages = self.stages[:new_interval[0]] + [stage] + self.stages[new_interval[1]:] 
+                    #self.start = self.start[:new_interval[0]] + [start,end] + self.start[new_interval[1]+2:] 
+                    #self.end = self.end[:new_interval[0]] + [end] + self.end[new_interval[1]+1:] 
+                    #self.stages = self.stages[:new_interval[0]] + [stage] + self.stages[new_interval[1]+1:] 
+                    self.num_slots = len(self.start)
 
-        return print_string
+                elif self.end[new_interval[1]] == end:
+                    #Aligns to an interval's end
+                    self.start = self.start[:new_interval[0]+1] + [start] + self.start[new_interval[1]+1:] 
+                    self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]+1:] 
+                    self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]+1:] 
+                    #print(self.start)
+                    #print(self.end)
+                    #print(self.stages)
+                    #self.start = self.start[:new_interval[0]+1] + [start] + self.start[new_interval[1]+1:] 
+                    #self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]+1:] 
+                    #self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]+1:] 
+                    self.num_slots = len(self.start)
+
+                else:
+                    #Does not align to any existing intervals
+                    self.start = self.start[:new_interval[0]+1] + [start,end] + self.start[new_interval[1]+1:] 
+                    self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]:] 
+                    self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]:] 
+                    #self.start = self.start[:new_interval[0]+1] + [start,end] + self.start[new_interval[1]+2:] 
+                    #self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]+1:] 
+                    #self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]+1:] 
+                    self.num_slots = len(self.start)
+        
+        if not self.isCompleteDay():
+            raise ValueError('New time interval was not successfully added and time interval was corrupted') 
