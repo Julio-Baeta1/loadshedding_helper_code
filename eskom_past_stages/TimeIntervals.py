@@ -7,11 +7,13 @@ class TimeIntervals:
     old information
     """
 
-    def __init__(self,start,end,stages):
+    def __init__(self,start,end,stages,full_day = True):
         """
         start: string list of interval starting times '17:00','20:00'
         end: string list of interval ending times '20:00','00:00'
         stages: corresponding load-shedding stage for each time interval
+
+        full_day = False to more easily test isValid() and isCompleteDay() must fix tests to work better but is not a priority right now 
         """
         
         if len(start)==len(end) and len(end)==len(stages):
@@ -30,6 +32,27 @@ class TimeIntervals:
             
         else:
             raise ValueError('Time interval creations list dims do not match')  
+
+        if full_day == True:
+            
+            if not self.isCompleteDay():
+
+                if self.start[0] != self.zero:
+                    self.start = [self.zero] + self.start
+                    self.end = [self.start[1]] + self.end 
+                    self.stages = [0] + self.stages 
+                    self.num_slots += 1
+
+                if self.end[self.num_slots-1] != self.max:
+                    self.start = self.start + [self.end[self.num_slots-1]]
+                    self.end = self.end + [self.max]
+                    self.stages = self.stages +[0] 
+                    self.num_slots += 1
+
+            if not self.isCompleteDay():
+                raise ValueError('Time intervals do not align')
+                #Time intervals do not align please make sure start[i] equals end[i+1]
+
         
     def __str__(self):
         
@@ -233,3 +256,4 @@ class TimeIntervals:
         
         if not self.isCompleteDay():
             raise ValueError('New time interval was not successfully added and time interval was corrupted') 
+        

@@ -1,3 +1,8 @@
+"""
+Note it would be better to more rigorously test each instance of values for start, end and stages instead of comparing the string value
+for the class. Since speed is prioritiesed this will be done at a later stage as the string method is "good" enough for now.
+"""
+
 import unittest
 from datetime import datetime
 from TimeIntervals import TimeIntervals
@@ -13,7 +18,8 @@ class TestTimeIntervals(unittest.TestCase):
 
     def tearDown(self):
         del self.day1
-        del self.size 
+        del self.size
+
 
 #######################################################################################################################################     
 #Basic functionality
@@ -26,6 +32,40 @@ class TestTimeIntervals(unittest.TestCase):
         self.assertTrue(str(self.day1)==correct_string)
 
 #######################################################################################################################################
+#Constructor Test
+
+    def testTimeIntervalsCreatorNotDayStart(self):
+        start_time2 = ["01:00","05:00","20:00"]
+        end_time2 = ["05:00","20:00","00:00"]
+        stages2 = [5,3,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        correct_string = "stage: 0 from 00:00 to 01:00\nstage: 5 from 01:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
+        self.assertTrue(str(day2)==correct_string)
+
+    def testTimeIntervalsCreatorNotDayEnd(self):
+        start_time2 = ["00:00","05:00","20:00"]
+        end_time2 = ["05:00","20:00","23:00"]
+        stages2 = [5,3,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 23:00\nstage: 0 from 23:00 to 00:00\n"
+        self.assertTrue(str(day2)==correct_string)
+
+    def testTimeIntervalsCreatorMismatchIntervalTimes(self):
+        start_time2 = ["00:00","10:00","20:00"]
+        end_time2 = ["05:00","20:00","23:00"]
+        stages2 = [5,3,4]
+        self.assertRaisesRegex(ValueError, "Time intervals do not align", TimeIntervals, start_time2,end_time2,stages2)
+
+    def testTimeIntervalsCreatorMismatchIntervalStartAndEndBothIncorrect(self):
+        start_time2 = ["01:00","05:00","20:00"]
+        end_time2 = ["05:00","20:00","23:00"]
+        stages2 = [5,3,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        correct_string = "stage: 0 from 00:00 to 01:00\nstage: 5 from 01:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 23:00\nstage: 0 from 23:00 to 00:00\n"
+        self.assertTrue(str(day2)==correct_string)
+
+
+#######################################################################################################################################
 #Simple helper function test
 
     def testTimeIntervalsIsValidTrueCase(self):
@@ -35,14 +75,18 @@ class TestTimeIntervals(unittest.TestCase):
         start_time2 = ["00:00","10:00","20:00"]
         end_time2 = ["05:00","20:00","00:00"]
         stages2 = [5,3,4]
-        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        # For TimeIntervals full_day must be false, else an error in creator function is thrown instead, improve by testing with 
+        # FitInInterval
+        day2 = TimeIntervals(start_time2,end_time2,stages2,False)
         self.assertFalse(day2.isValid())
 
     def testTimeIntervalsIsValidFalseCaseStart0EndNMismatch(self):
         start_time2 = ["00:00","05:00","20:00"]
         end_time2 = ["05:00","20:00","23:00"]
         stages2 = [5,3,4]
-        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        # For TimeIntervals full_day must be false, else an error in creator function is thrown instead, improve by testing with 
+        # FitInInterval
+        day2 = TimeIntervals(start_time2,end_time2,stages2,False)
         self.assertFalse(day2.isValid())
 
     def testTimeIntervalsIsCompleteDayTrueCase(self):
@@ -52,14 +96,18 @@ class TestTimeIntervals(unittest.TestCase):
         start_time2 = ["02:00","05:00","20:00"]
         end_time2 = ["05:00","20:00","00:00"]
         stages2 = [5,3,4]
-        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        # For TimeIntervals full_day must be false, else an error in creator function is thrown instead, improve by testing with 
+        # FitInInterval
+        day2 = TimeIntervals(start_time2,end_time2,stages2,False)
         self.assertFalse(day2.isValid())
 
     def testTimeIntervalsIsCompleteDayFalseCaseEndDayNotZero(self):
         start_time2 = ["00:00","05:00","20:00"]
         end_time2 = ["05:00","20:00","23:00"]
         stages2 = [5,3,4]
-        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        # For TimeIntervals full_day must be false, else an error in creator function is thrown instead, improve by testing with 
+        # FitInInterval
+        day2 = TimeIntervals(start_time2,end_time2,stages2,False)
         self.assertFalse(day2.isValid())
 
 ########################################################################################################################################
