@@ -264,71 +264,71 @@ class TestTimeIntervals(unittest.TestCase):
 #FitNewInterval where new interval is contained in a single existing interval
     
     def testTimeIntervalsExistingSlotChangeStageValue(self):
-        ss = datetime.strptime('05:00', '%H:%M')
-        ee = datetime.strptime('20:00', '%H:%M')
+        ss = '05:00'
+        ee = '20:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 1 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
         
     def testTimeIntervalsInsertInOneIntervalEqualStartLessThanEnd(self):
-        ss = datetime.strptime('05:00', '%H:%M')
-        ee = datetime.strptime('09:00', '%H:%M')
+        ss = '05:00'
+        ee = '09:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 1 from 05:00 to 09:00\nstage: 3 from 09:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
         
     def testTimeIntervalsInsertInOneIntervalGreaterThanStartEqualEnd(self):
-        ss = datetime.strptime('10:00', '%H:%M')
-        ee = datetime.strptime('20:00', '%H:%M')
+        ss = '10:00'
+        ee = '20:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 10:00\nstage: 1 from 10:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInOneIntervalGreaterThanStartLessThanEnd(self):
-        ss = datetime.strptime('08:00', '%H:%M')
-        ee = datetime.strptime('17:00', '%H:%M')
+        ss = '08:00'
+        ee = '17:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 08:00\nstage: 1 from 08:00 to 17:00\nstage: 3 from 17:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInOneIntervalEqualStartLessThanEndFirstSlot(self):
-        ss = datetime.strptime('00:00', '%H:%M')
-        ee = datetime.strptime('04:00', '%H:%M')
+        ss = '00:00'
+        ee = '04:00'
         correct_string = "stage: 1 from 00:00 to 04:00\nstage: 5 from 04:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
         
     def testTimeIntervalsInsertInOneIntervalGreaterThanStartEqualEndFirstSlot(self):
-        ss = datetime.strptime('02:00', '%H:%M')
-        ee = datetime.strptime('05:00', '%H:%M')
+        ss = '02:00'
+        ee = '05:00'
         correct_string = "stage: 5 from 00:00 to 02:00\nstage: 1 from 02:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInOneIntervalGreaterThanStartLessThanEndFirstSlot(self):
-        ss = datetime.strptime('02:00', '%H:%M')
-        ee = datetime.strptime('04:00', '%H:%M')
+        ss = '02:00'
+        ee = '04:00'
         correct_string = "stage: 5 from 00:00 to 02:00\nstage: 1 from 02:00 to 04:00\nstage: 5 from 04:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInOneIntervalEqualStartLessThanEndLastSlot(self):
-        ss = datetime.strptime('20:00', '%H:%M')
-        ee = datetime.strptime('22:00', '%H:%M')
+        ss = '20:00'
+        ee = '22:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 1 from 20:00 to 22:00\nstage: 4 from 22:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
         
     def testTimeIntervalsInsertInOneIntervalGreaterThanStartEqualEndLastSlot(self):
-        ss = datetime.strptime('23:00', '%H:%M')
-        ee = datetime.strptime('00:00', '%H:%M')
+        ss = '23:00'
+        ee = '00:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 23:00\nstage: 1 from 23:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInOneIntervalGreaterThanStartLessThanEndLastSlot(self):
-        ss = datetime.strptime('21:00', '%H:%M')
-        ee = datetime.strptime('23:00', '%H:%M')
+        ss = '21:00'
+        ee = '23:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 21:00\nstage: 1 from 21:00 to 23:00\nstage: 4 from 23:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
@@ -337,58 +337,58 @@ class TestTimeIntervals(unittest.TestCase):
 
 
     def testTimeIntervalsInsertInMultipleIntervalsNewSpansTwoIntervalsReduceToOne(self):
-        ss = datetime.strptime('00:00', '%H:%M')
-        ee = datetime.strptime('20:00', '%H:%M')
+        ss = '00:00'
+        ee = '20:00'
         correct_string = "stage: 1 from 00:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInMultipleIntervalsNewSpansTwoIntervalsReduceToOneLastSlot(self):
-        ss = datetime.strptime('05:00', '%H:%M')
-        ee = datetime.strptime('00:00', '%H:%M')
+        ss = '05:00'
+        ee = '00:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 1 from 05:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
         
     def testTimeIntervalsInsertInMultipleIntervalsNewEqualStartLessThanEnd(self):
-        ss = datetime.strptime('00:00', '%H:%M')
-        ee = datetime.strptime('15:00', '%H:%M')
+        ss = '00:00'
+        ee = '15:00'
         correct_string = "stage: 1 from 00:00 to 15:00\nstage: 3 from 15:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInMultipleIntervalsNewGreaterThanStartEqualEnd(self):
-        ss = datetime.strptime('04:00', '%H:%M')
-        ee = datetime.strptime('20:00', '%H:%M')
+        ss = '04:00'
+        ee = '20:00'
         correct_string = "stage: 5 from 00:00 to 04:00\nstage: 1 from 04:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInMultipleIntervalsNewGreaterThanStartLessThanEnd(self):
-        ss = datetime.strptime('04:00', '%H:%M')
-        ee = datetime.strptime('15:00', '%H:%M')
+        ss = '04:00'
+        ee = '15:00'
         correct_string = "stage: 5 from 00:00 to 04:00\nstage: 1 from 04:00 to 15:00\nstage: 3 from 15:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
         
     
     def testTimeIntervalsInsertInMultipleIntervalsNewEqualStartLessThanEndLastSlot(self):
-        ss = datetime.strptime('05:00', '%H:%M')
-        ee = datetime.strptime('21:00', '%H:%M')
+        ss = '05:00'
+        ee = '21:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 1 from 05:00 to 21:00\nstage: 4 from 21:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInMultipleIntervalsNewGreaterThanStartEqualEndLastSlot(self):
-        ss = datetime.strptime('11:00', '%H:%M')
-        ee = datetime.strptime('00:00', '%H:%M')
+        ss = '11:00'
+        ee = '00:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 11:00\nstage: 1 from 11:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
 
     def testTimeIntervalsInsertInMultipleIntervalsNewGreaterThanStartLessThanEndLastSlot(self):
-        ss = datetime.strptime('11:00', '%H:%M')
-        ee = datetime.strptime('23:00', '%H:%M')
+        ss = '11:00'
+        ee = '23:00'
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 11:00\nstage: 1 from 11:00 to 23:00\nstage: 4 from 23:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)
@@ -398,8 +398,8 @@ class TestTimeIntervals(unittest.TestCase):
         end_time2 = ["06:00","08:00","12:00","13:00","17:00","21:00","00:00"]
         stages2 = [5,6,3,3,4,7,5]
         day2 = TimeIntervals(start_time2,end_time2,stages2)
-        ss = datetime.strptime('06:00', '%H:%M')
-        ee = datetime.strptime('21:00', '%H:%M')
+        ss = '06:00'
+        ee = '21:00'
 
         correct_string = "stage: 5 from 00:00 to 06:00\nstage: 1 from 06:00 to 21:00\nstage: 5 from 21:00 to 00:00\n"
         day2.fitNewInterval(1,ss,ee)
@@ -410,8 +410,8 @@ class TestTimeIntervals(unittest.TestCase):
         end_time2 = ["06:00","08:00","12:00","13:00","17:00","21:00","00:00"]
         stages2 = [5,6,3,3,4,7,5]
         day2 = TimeIntervals(start_time2,end_time2,stages2)
-        ss = datetime.strptime('06:00', '%H:%M')
-        ee = datetime.strptime('19:00', '%H:%M')
+        ss = '06:00'
+        ee = '19:00'
 
         correct_string = "stage: 5 from 00:00 to 06:00\nstage: 1 from 06:00 to 19:00\nstage: 7 from 19:00 to 21:00\nstage: 5 from 21:00 to 00:00\n"
         day2.fitNewInterval(1,ss,ee)
@@ -422,8 +422,8 @@ class TestTimeIntervals(unittest.TestCase):
         end_time2 = ["06:00","08:00","12:00","13:00","17:00","21:00","00:00"]
         stages2 = [5,6,3,3,4,7,5]
         day2 = TimeIntervals(start_time2,end_time2,stages2)
-        ss = datetime.strptime('08:00', '%H:%M')
-        ee = datetime.strptime('20:00', '%H:%M')
+        ss = '08:00'
+        ee = '20:00'
 
         correct_string = "stage: 5 from 00:00 to 06:00\nstage: 6 from 06:00 to 08:00\nstage: 1 from 08:00 to 20:00\nstage: 7 from 20:00 to 21:00\nstage: 5 from 21:00 to 00:00\n"
         day2.fitNewInterval(1,ss,ee)
@@ -434,16 +434,16 @@ class TestTimeIntervals(unittest.TestCase):
         end_time2 = ["06:00","08:00","12:00","13:00","17:00","21:00","00:00"]
         stages2 = [5,6,3,3,4,7,5]
         day2 = TimeIntervals(start_time2,end_time2,stages2)
-        ss = datetime.strptime('08:00', '%H:%M')
-        ee = datetime.strptime('19:00', '%H:%M')
+        ss = '08:00'
+        ee = '19:00'
 
         correct_string = "stage: 5 from 00:00 to 06:00\nstage: 6 from 06:00 to 08:00\nstage: 1 from 08:00 to 19:00\nstage: 7 from 19:00 to 21:00\nstage: 5 from 21:00 to 00:00\n"
         day2.fitNewInterval(1,ss,ee)
         self.assertTrue(str(day2)==correct_string)
 
     def testTimeIntervalsInsertInMultipleIntervalsEntireDay(self):
-        ss = datetime.strptime('00:00', '%H:%M')
-        ee = datetime.strptime('00:00', '%H:%M')
+        ss = '00:00'
+        ee = '00:00'
         correct_string = "stage: 1 from 00:00 to 00:00\n"
         self.day1.fitNewInterval(1,ss,ee)
         self.assertTrue(str(self.day1)==correct_string)

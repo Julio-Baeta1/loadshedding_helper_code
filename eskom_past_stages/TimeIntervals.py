@@ -167,7 +167,10 @@ class TimeIntervals:
     def fitNewInterval(self, stage, start, end):
         """
         Insert new time interval into set of existing intervals
-        """
+        """       
+        
+        start = datetime.strptime(start, '%H:%M')
+        end = datetime.strptime(end, '%H:%M')
         
         if end == self.zero:
             end = self.max
@@ -226,9 +229,6 @@ class TimeIntervals:
                     self.start = self.start[:new_interval[0]] + [start,end] + self.start[new_interval[1]+1:] 
                     self.end = self.end[:new_interval[0]] + [end] + self.end[new_interval[1]:] 
                     self.stages = self.stages[:new_interval[0]] + [stage] + self.stages[new_interval[1]:] 
-                    #self.start = self.start[:new_interval[0]] + [start,end] + self.start[new_interval[1]+2:] 
-                    #self.end = self.end[:new_interval[0]] + [end] + self.end[new_interval[1]+1:] 
-                    #self.stages = self.stages[:new_interval[0]] + [stage] + self.stages[new_interval[1]+1:] 
                     self.num_slots = len(self.start)
 
                 elif self.end[new_interval[1]] == end:
@@ -236,12 +236,6 @@ class TimeIntervals:
                     self.start = self.start[:new_interval[0]+1] + [start] + self.start[new_interval[1]+1:] 
                     self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]+1:] 
                     self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]+1:] 
-                    #print(self.start)
-                    #print(self.end)
-                    #print(self.stages)
-                    #self.start = self.start[:new_interval[0]+1] + [start] + self.start[new_interval[1]+1:] 
-                    #self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]+1:] 
-                    #self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]+1:] 
                     self.num_slots = len(self.start)
 
                 else:
@@ -249,9 +243,6 @@ class TimeIntervals:
                     self.start = self.start[:new_interval[0]+1] + [start,end] + self.start[new_interval[1]+1:] 
                     self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]:] 
                     self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]:] 
-                    #self.start = self.start[:new_interval[0]+1] + [start,end] + self.start[new_interval[1]+2:] 
-                    #self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]+1:] 
-                    #self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]+1:] 
                     self.num_slots = len(self.start)
         
         if not self.isCompleteDay():
