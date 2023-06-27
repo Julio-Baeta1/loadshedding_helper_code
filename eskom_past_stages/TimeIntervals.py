@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 class TimeIntervals:
     """
@@ -68,6 +69,37 @@ class TimeIntervals:
             print_string += str(self.end[self.num_slots-1].strftime('%H:%M'))+ "\n"
 
         return print_string
+
+    def outputDayJson(self):
+        """"
+        Output TimeInterval as a json object 
+        """
+
+        dict ={}
+
+        for i in range(self.num_slots):
+            dict[i] = {'stage':self.stages[i], 'start': self.start[i].strftime('%H:%M'), 'end': self.end[i].strftime('%H:%M')}
+
+        if dict[self.num_slots-1]['end'] == '23:59':
+            dict[self.num_slots-1]['end'] = '00:00'
+
+        return json.dumps(dict)
+
+
+    def outputDayDict(self):
+        """"
+        Output TimeInterval as a dict 
+        """
+
+        dict ={}
+
+        for i in range(self.num_slots):
+            dict[i] = {'stage':self.stages[i], 'start': self.start[i].strftime('%H:%M'), 'end': self.end[i].strftime('%H:%M')}
+
+        if dict[self.num_slots-1]['end'] == '23:59':
+            dict[self.num_slots-1]['end'] = '00:00'
+
+        return dict
 
  
     def isValid(self):

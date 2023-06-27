@@ -31,6 +31,16 @@ class TestTimeIntervals(unittest.TestCase):
         correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
         self.assertTrue(str(self.day1)==correct_string)
 
+    def testTimeIntervalsOutputAsJson(self):
+        output_json = self.day1.outputDayJson()
+        correct_json = """{"0": {"stage": 5, "start": "00:00", "end": "05:00"}, "1": {"stage": 3, "start": "05:00", "end": "20:00"}, "2": {"stage": 4, "start": "20:00", "end": "00:00"}}"""
+        self.assertEqual(output_json, correct_json)
+
+    def testTimeIntervalsOutputAsDict(self):
+        output_dict = self.day1.outputDayDict()
+        correct_dict = {0: {"stage": 5, "start": "00:00", "end": "05:00"}, 1: {"stage": 3, "start": "05:00", "end": "20:00"}, 2: {"stage": 4, "start": "20:00", "end": "00:00"}}
+        self.assertEqual(output_dict, correct_dict)
+
 #######################################################################################################################################
 #Constructor Test
 
