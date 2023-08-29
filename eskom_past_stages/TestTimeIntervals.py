@@ -8,6 +8,7 @@ from datetime import datetime
 from TimeIntervals import TimeIntervals
 
 class TestTimeIntervals(unittest.TestCase):
+#Look into selective setUp for cases where object not wanted
 
     def setUp(self):
         start_time1 = ["00:00","05:00","20:00"]
@@ -119,6 +120,86 @@ class TestTimeIntervals(unittest.TestCase):
         # FitInInterval
         day2 = TimeIntervals(start_time2,end_time2,stages2,False)
         self.assertFalse(day2.isValid())
+
+    def testTimeIntervalsIsCompleteDayFalseCaseEndDayNotZero(self):
+        start_time2 = ["00:00","05:00","20:00"]
+        end_time2 = ["05:00","20:00","23:00"]
+        stages2 = [5,3,4]
+        # For TimeIntervals full_day must be false, else an error in creator function is thrown instead, improve by testing with 
+        # FitInInterval
+        day2 = TimeIntervals(start_time2,end_time2,stages2,False)
+        self.assertFalse(day2.isValid())
+
+########################################################################################################################################
+#removeDuplicate tests
+
+    def testTimeIntervalsRemoveDuplicateNoDuplicate(self):
+        start_time2 = ["00:00","05:00","20:00"]
+        end_time2 = ["05:00","20:00","00:00"]
+        stages2 = [5,3,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        day2.stages[1] = 2 #must protect data and build a test function, but easier to directly test without protection
+        correct_string = "stage: 5 from 00:00 to 05:00\nstage: 2 from 05:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
+        day2.removeDuplicate()
+        self.assertTrue(str(day2)==correct_string)
+        self.assertTrue(day2.num_slots==3)
+
+    def testTimeIntervalsRemoveDuplicateOneDuplicate(self):
+        start_time2 = ["00:00","05:00","10:00","20:00"]
+        end_time2 = ["05:00","10:00","20:00","00:00"]
+        stages2 = [5,3,6,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        day2.stages[1] = 5 #must protect data and build a test function, but easier to directly test without protection
+        correct_string = "stage: 5 from 00:00 to 10:00\nstage: 6 from 10:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
+        day2.removeDuplicate()
+        self.assertTrue(str(day2)==correct_string)
+        self.assertTrue( self.day1.num_slots ==3)
+
+    def testTimeIntervalsRemoveDuplicateMultipleDuplicates(self):
+        start_time2 = ["00:00","05:00","10:00","20:00"]
+        end_time2 = ["05:00","10:00","20:00","00:00"]
+        stages2 = [5,3,6,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        day2.stages[2] = 3 #must protect data and build a test function, but easier to directly test without protection
+        day2.stages[3] = 3 
+        correct_string = "stage: 5 from 00:00 to 05:00\nstage: 3 from 05:00 to 00:00\n"
+        day2.removeDuplicate()
+        self.assertTrue(str(day2)==correct_string)
+        self.assertTrue(day2.num_slots==2)
+
+    def testTimeIntervalsRemoveDuplicateEntireDay(self):
+        start_time2 = ["00:00","05:00","10:00","20:00"]
+        end_time2 = ["05:00","10:00","20:00","00:00"]
+        stages2 = [5,3,6,5]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        day2.stages[1] = 5 #must protect data and build a test function, but easier to directly test without protection
+        day2.stages[2] = 5 
+        correct_string = "stage: 5 from 00:00 to 00:00\n"
+        day2.removeDuplicate()
+        self.assertTrue(str(day2)==correct_string)
+        self.assertTrue(day2.num_slots==1)
+
+
+    def testTimeIntervalsRemoveDuplicateInInitialise(self):
+        start_time2 = ["00:00","05:00","20:00"]
+        end_time2 = ["05:00","20:00","00:00"]
+        stages2 = [5,5,4]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        correct_string = "stage: 5 from 00:00 to 20:00\nstage: 4 from 20:00 to 00:00\n"
+        self.assertTrue(str(day2)==correct_string)
+
+    def testTimeIntervalsRemoveDuplicateInInsert(self):
+    #used test for testTimeIntervalsInsertInMultipleIntervalsNewSpansMoreThanTwoIntervalsReduceToOne
+        start_time2 = ["00:00","06:00","08:00","12:00","13:00","17:00","21:00"]
+        end_time2 = ["06:00","08:00","12:00","13:00","17:00","21:00","00:00"]
+        stages2 = [5,6,3,2,4,7,6]
+        day2 = TimeIntervals(start_time2,end_time2,stages2)
+        ss = '06:00'
+        ee = '21:00'
+
+        correct_string = "stage: 5 from 00:00 to 21:00\nstage: 6 from 21:00 to 00:00\n"
+        day2.fitNewInterval(5,ss,ee)
+        self.assertTrue(str(day2)==correct_string)
 
 ########################################################################################################################################
 #IsInterval tests

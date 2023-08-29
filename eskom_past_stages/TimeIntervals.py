@@ -19,6 +19,8 @@ class TimeIntervals:
         
         if len(start)==len(end) and len(end)==len(stages):
             #Start, end and stages lists must be of same size for valid intervals to form 
+            #must protect data and build a test function, but easier to directly test without protection
+            #Add option to see if input can be turned into date
             
             self.start = [datetime.strptime(str_t, '%H:%M') for str_t in start]
             self.end = [datetime.strptime(str_t, '%H:%M') for str_t in end]
@@ -53,6 +55,8 @@ class TimeIntervals:
             if not self.isCompleteDay():
                 raise ValueError('Time intervals do not align')
                 #Time intervals do not align please make sure start[i] equals end[i+1]
+
+            self.removeDuplicate()
 
         
     def __str__(self):
@@ -100,6 +104,25 @@ class TimeIntervals:
             dict[self.num_slots-1]['end'] = '00:00'
 
         return dict
+    
+    def removeDuplicate(self):
+        """
+        In the case when two adjacent time intervals have the same stage value, this function will combine them into one interval
+        spanning their ranges
+        """
+        i = 0
+
+        while(i < self.num_slots-1): 
+            #While loop easily allows for the shrinking size of slots as well as double checking of slots
+            if(self.stages[i] == self.stages[i+1]):
+                    self.end[i] = self.end[i+1]
+                    self.start = self.start[:i+1] + self.start[i+2:]
+                    self.end = self.end[:i+1] + self.end[i+2:]
+                    self.stages = self.stages[:i+1] + self.stages[i+2:]
+                    self.num_slots -= 1
+            else:
+                i += 1
+
 
  
     def isValid(self):
@@ -182,17 +205,6 @@ class TimeIntervals:
                 multi_int[1] = i
             elif self.end[i] == end:
                 multi_int[1] = i
-
-        """multi_int = [-1,-1]
-        for i in range(self.num_slots):
-            if self.start[i] > start and multi_int[0] == -1:
-                multi_int[0] = i-1
-            elif self.start[i] == start:
-                multi_int[0] = i
-            if self.end[i] > end and multi_int[1] == -1:
-                multi_int[1] = i-1
-            elif self.end[i] == end:
-                multi_int[1] = i"""
                        
         return multi_int
     
@@ -276,6 +288,8 @@ class TimeIntervals:
                     self.end = self.end[:new_interval[0]] + [start,end] + self.end[new_interval[1]:] 
                     self.stages = self.stages[:new_interval[0]+1] + [stage] + self.stages[new_interval[1]:] 
                     self.num_slots = len(self.start)
+
+        self.removeDuplicate()
         
         if not self.isCompleteDay():
             raise ValueError('New time interval was not successfully added and time interval was corrupted') 
