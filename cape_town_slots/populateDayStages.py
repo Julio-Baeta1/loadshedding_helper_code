@@ -28,6 +28,8 @@ with open('cape_town_day_stages.json') as json_file:
 #            start_time TIME NOT NULL, 
 #            end_time TIME NOT NULL);""")
 
+cur.execute(f"""SET datestyle = dmy;""")
+
 for day,day_slots in data.items(): 
     #For each day in data dict
     for slot_num, slot in day_slots.items():
